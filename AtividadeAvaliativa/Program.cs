@@ -6,7 +6,9 @@ namespace AtividadeAvaliativa
     {
         static void Main(string[] args)
         {
+            // instanciar a biblioteca
             Biblioteca biblioteca = new Biblioteca();
+            // fazer o menu
             int opcao = 0;
             do
             {
@@ -25,20 +27,18 @@ namespace AtividadeAvaliativa
 
                 switch (opcao)
                 {
+
                     case 1:
-                        #region Add a new person to the list while checking if the id alreadz exists
+                        // Add a new person to the list while checking if the id already exists
                         Console.WriteLine("Cadastro de Pessoa:");
                         Console.Write("Id: ");
                         int idPessoa = int.Parse(Console.ReadLine());
-
-                         
                         if (biblioteca.VerifyPersonId(idPessoa))
                         {
                             Console.WriteLine("Pessoa já cadastrada.");
 
                             break;
                         }
-
                         Console.Write("Nome: ");
                         string nomePessoa = Console.ReadLine();
                         Console.Write("CPF: ");
@@ -49,9 +49,9 @@ namespace AtividadeAvaliativa
                         biblioteca.CadastrarPessoa(novaPessoa);
                         Console.WriteLine("Pessoa cadastrada com sucesso!");
                         break;
-                        #endregion
+                    
 
-                    case 2:
+                    case 2: //Put a book on the List checking if the book already exists
                         Console.WriteLine("Cadastro de Livro:");
                         Console.Write("Id: ");
                         int idLivro = int.Parse(Console.ReadLine());
@@ -74,20 +74,21 @@ namespace AtividadeAvaliativa
                         Console.WriteLine("Livro cadastrado com sucesso!");
                         break;
 
-                    case 3:
-                        Console.WriteLine("Emprestar Livro:");
-                        Console.Write("Id do Livro: ");
+                    case 3:  //Lend a book using methods to check the id and the title of the book
+                             //and the name of the person 
+                        Console.WriteLine("Emprestar Livro:"); //Lend a book
+                        Console.Write("Id do Livro: "); //book ID you want to rent
                         int idLivroEmprestimo = int.Parse(Console.ReadLine());
                         if (biblioteca.VerifyBookId(idLivroEmprestimo))
                         {
-                            Console.WriteLine("Livro já cadastrado.");
+                            Console.WriteLine("Livro já cadastrado."); //This Book exists
                         }
                         else
                         {
-                            Console.WriteLine("Livro não cadastrado.");
+                            Console.WriteLine("Livro não cadastrado.");//Book does not exists
                             break;
                         }
-                        Console.Write("Id da Pessoa: ");
+                        Console.Write("Id da Pessoa: "); //ID of the person that wants to lend the book
                         int idPessoaEmprestimo = int.Parse(Console.ReadLine());
                         if (biblioteca.VerifyPersonId(idPessoaEmprestimo))
                         {
@@ -100,13 +101,89 @@ namespace AtividadeAvaliativa
                         }
                         biblioteca.EmprestarLivroBiblioteca(idLivroEmprestimo, idPessoaEmprestimo);
                         Console.WriteLine("Livro Emprestado com Sucesso!");
-                        Console.WriteLine($"O livro {biblioteca.tituloLivro} foi emprestado para {bibliotenomePessoa}");
+                        Console.WriteLine($"O livro {biblioteca.GetBookTitleById(idLivroEmprestimo)} " +
+                                          $"foi emprestado para {biblioteca.GetPersonNameById(idPessoaEmprestimo)}");
                         break;
+
+                    // return book using methods to check the id and the title of the book
+                    //and the name of the person 
                     case 4:
+                        Console.WriteLine("Devolver Livro:");
+                        Console.Write("Id do Livro: ");
+                        int idLivroDevolucao = int.Parse(Console.ReadLine());
+                        if (biblioteca.VerifyBookId(idLivroDevolucao))
+                        {
+                            Console.WriteLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Livro não cadastrado.");
+                            break;
+                        }
+                        Console.Write("Id da Pessoa: ");
+                        int idPessoaDevolucao = int.Parse(Console.ReadLine());
+                        if (biblioteca.VerifyPersonId(idPessoaDevolucao))
+                        {
+                            Console.WriteLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Pessoa não cadastrada.");
+                            break;
+                        }
+                        biblioteca.DevolverLivroBiblioteca(idLivroDevolucao, idPessoaDevolucao);
+                        Console.WriteLine("Livro Devolvido com Sucesso!");
+                        Console.WriteLine($"O livro {biblioteca.GetBookTitleById(idLivroDevolucao)} " +
+                                           $"foi emprestado para {biblioteca.GetPersonNameById(idPessoaDevolucao)}");
+
+                        break;
+                        // list all book
+                    case 5:
+                        Console.WriteLine("Listar todos os livros:");
+                        foreach (Livro livro in biblioteca.Livros)
+                        {
+                            Console.WriteLine($"Id: {livro.Id} - Título: {livro.Titulo} - Autor: {livro.Autor} - Editora: {livro.Editora} - Disponibilidade: {livro.QuantidadeExemplares}");
+                        }
+                        break;
+
+
+                        // list all people
+                    case 6:
+                        Console.WriteLine("Listar todas as pessoas cadastradas:");
+                        foreach (Pessoa pessoa in biblioteca.Pessoas)
+                        {
+                            Console.WriteLine($"Id: {pessoa.Id} - Nome: {pessoa.Nome} - CPF: {pessoa.Cpf} - Telefone: {pessoa.Telefone}");
+                        }
+                        break;
+
+
+                        // list all borrowed books using a foreach to check if the list is empty
+                        // and use the if count to see if theres any book on the list of borrowed books
+                    case 7:
+                        Console.WriteLine("Listar todos os livros emprestados:");
+                        foreach (Pessoa pessoa in biblioteca.Pessoas)
+                        {
+
+                            if (pessoa.LivrosEmprestados.Count > 0)
+                            {
+                                foreach (Livro livro in pessoa.LivrosEmprestados)
+                                {
+                                    
+                                        Console.WriteLine($"Id: {livro.Id} - Título: {livro.Titulo} - Autor: {livro.Autor} - Editora: {livro.Editora} - Disponibilidade: {livro.QuantidadeExemplares}");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Não há livros emprestados! ");
+                            }
+
+                            
+                        }
+                        break;
 
                 }
                 
-               // Console.Clear();
+             // when you hit 0, the menu closes
 
             } while (opcao != 0);
         }
